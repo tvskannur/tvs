@@ -113,11 +113,13 @@ var ps=document.querySelectorAll('[data-s]'),par=document.querySelector('.par .l
 function up(){var y=scrollY;$('hd').classList.toggle('sc',y>40);if(y<innerHeight*1.2)ps.forEach(function(el){el.style.transform='translate3d(0,'+(y*el.dataset.s*-1)+'px,0)'});
 var r=par.parentNode.getBoundingClientRect();par.style.transform='translate3d(0,'+((r.top)*-.15)+'px,0)';tk=0}
 addEventListener('scroll',function(){if(!tk){tk=1;requestAnimationFrame(up)}},{passive:true});up();
+/* gclid capture */
+var GCLID=(function(){try{var q=new URLSearchParams(location.search).get('gclid');if(q)localStorage.setItem('gclid',q);return q||localStorage.getItem('gclid')||''}catch(x){return ''}})();
 /* lead form */
 $('lead').onsubmit=function(e){e.preventDefault();var f=this,n=$('n').value.trim(),p=$('p').value.replace(/\D/g,'');if(p.length>10&&p.indexOf('91')===0)p=p.slice(2);
 if(!n){$('n').focus();return}if(!/^[6-9]\d{9}$/.test(p)){$('perr').style.display='block';$('p').focus();return}$('perr').style.display='none';
 var ok=function(){window.dataLayer=window.dataLayer||[];dataLayer.push({event:'generate_lead',lead_model:sel.value||'Not selected',lead_location:$('l').value||''});f.innerHTML='<h2>Thank you!</h2><p style="margin-top:8px">We will call you shortly. Or call <a href="tel:+917736360444"><b>7736 360 444</b></a>.</p>'};
-if(!SHEET_URL)return ok();var d=new URLSearchParams();d.append('name',n);d.append('phone',p);d.append('interest',(sel.value||'Not selected')+' | '+$('l').value);d.append('location',$('l').value);
+if(!SHEET_URL)return ok();var d=new URLSearchParams();d.append('name',n);d.append('phone',p);d.append('interest',(sel.value||'Not selected')+' | '+$('l').value);d.append('location',$('l').value);d.append('page',location.href);d.append('gclid',GCLID);
 fetch(SHEET_URL,{method:'POST',mode:'no-cors',body:d}).then(ok).catch(function(){alert('Could not send. Please call 7736 360 444.')})};
 /* call & whatsapp click tracking */
 document.addEventListener('click',function(e){var a=e.target.closest('a[href^="tel:"],a[href*="wa.me"]');if(!a)return;window.dataLayer=window.dataLayer||[];dataLayer.push({event:a.getAttribute('href').indexOf('tel:')===0?'call_click':'whatsapp_click',link_url:a.href})});
